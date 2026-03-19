@@ -1,0 +1,93 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/tomzavrel/Desktop/UPCE_FEI/C_Programování/SemestralniPrace/FitnessApp/FitnessApp.csproj": {}
+  },
+  "projects": {
+    "/Users/tomzavrel/Desktop/UPCE_FEI/C_Programování/SemestralniPrace/FitnessApp/FitnessApp.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/tomzavrel/Desktop/UPCE_FEI/C_Programování/SemestralniPrace/FitnessApp/FitnessApp.csproj",
+        "projectName": "FitnessApp",
+        "projectPath": "/Users/tomzavrel/Desktop/UPCE_FEI/C_Programování/SemestralniPrace/FitnessApp/FitnessApp.csproj",
+        "packagesPath": "/Users/tomzavrel/.nuget/packages/",
+        "outputPath": "/Users/tomzavrel/Desktop/UPCE_FEI/C_Programování/SemestralniPrace/FitnessApp/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/tomzavrel/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net10.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net10.0": {
+            "targetAlias": "net10.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net10.0": {
+          "targetAlias": "net10.0",
+          "dependencies": {
+            "Avalonia": {
+              "target": "Package",
+              "version": "[11.3.12, )"
+            },
+            "Avalonia.Desktop": {
+              "target": "Package",
+              "version": "[11.3.12, )"
+            },
+            "Avalonia.Diagnostics": {
+              "target": "Package",
+              "version": "[11.3.12, )"
+            },
+            "Avalonia.Fonts.Inter": {
+              "target": "Package",
+              "version": "[11.3.12, )"
+            },
+            "Avalonia.Themes.Fluent": {
+              "target": "Package",
+              "version": "[11.3.12, )"
+            },
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.103/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
