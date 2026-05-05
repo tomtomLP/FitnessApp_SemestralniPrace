@@ -1,0 +1,321 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FitnessApp.ViewModels"
+             x:Class="FitnessApp.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <Grid>
+
+        <!-- HLAVNÍ MENU NASTAVENÍ -->
+        <ScrollViewer IsVisible="{Binding !IsProfileVisible}">
+            <StackPanel Spacing="20" Margin="20,20,20,40">
+
+                <TextBlock Text="Menu" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" />
+
+                <Button Command="{Binding OtevritProfilCommand}" Background="#151C2C" CornerRadius="15" Padding="15"
+                        HorizontalAlignment="Stretch" Cursor="Hand">
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Border Grid.Column="0" Width="60" Height="60" CornerRadius="30" Background="#00E5FF">
+                            <TextBlock Text="{Binding ProfilovkaCesta}" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" FontSize="30" Foreground="White" />
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,0">
+                            <TextBlock Text="{Binding Jmeno}" Foreground="White" FontSize="20" FontWeight="Bold" />
+                            <TextBlock Text="Klikni pro úpravu profilu" Foreground="#A0AABF" FontSize="14" />
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="2" Text=">" Foreground="#A0AABF" FontSize="24" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="0,0,10,0" />
+                    </Grid>
+                </Button>
+
+                <TextBlock Text="APLIKACE" FontSize="12" FontWeight="Bold" Foreground="#A0AABF" Margin="10,10,0,-10" />
+                <Border Background="#151C2C" CornerRadius="15" Padding="20">
+                    <StackPanel Spacing="20">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Grid.Column="0" Text="Motiv aplikace" Foreground="White"
+                                       VerticalAlignment="Center" FontSize="16" />
+                            <TextBlock Grid.Column="1" Text="{Binding VybraneTema}" Foreground="#00E5FF"
+                                       VerticalAlignment="Center" FontSize="16" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="TRÉNINK" FontSize="12" FontWeight="Bold" Foreground="#A0AABF" Margin="10,10,0,-10" />
+                <Border Background="#151C2C" CornerRadius="15" Padding="20">
+                    <StackPanel Spacing="20">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Grid.Column="0" Text="Časovač pauzy (Rest Timer)" Foreground="White"
+                                       VerticalAlignment="Center" FontSize="16" />
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding RestTimerEnabled}" OnContent=""
+                                          OffContent="" Margin="0,-10,0,-10" />
+                        </Grid>
+
+                        <StackPanel Spacing="20" IsVisible="{Binding RestTimerEnabled}">
+                            <Border Height="1" Background="#2A364F" />
+                            <Grid ColumnDefinitions="*, Auto">
+                                <TextBlock Grid.Column="0" Text="Čas" Foreground="#A0AABF" VerticalAlignment="Center"
+                                           FontSize="16" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="15">
+                                    <Button Content="-" Command="{Binding UberCasCommand}" Background="#1E2A40"
+                                            Foreground="White" Width="40" Height="40"
+                                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            CornerRadius="10" Cursor="Hand" />
+                                    <TextBlock Text="{Binding RestTimerDisplay}" Foreground="White" FontSize="18"
+                                               FontWeight="Bold" VerticalAlignment="Center" Width="60"
+                                               TextAlignment="Center" />
+                                    <Button Content="+" Command="{Binding PridejCasCommand}" Background="#1E2A40"
+                                            Foreground="White" Width="40" Height="40"
+                                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                            CornerRadius="10" Cursor="Hand" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Button Command="{Binding ResetovatAplikaciCommand}" Background="#2A161A" CornerRadius="15"
+                        Padding="20" HorizontalAlignment="Stretch" Cursor="Hand" Margin="0,20,0,0">
+                    <TextBlock Text="Resetovat data aplikace" Foreground="#F44336" FontWeight="Bold" FontSize="16"
+                               HorizontalAlignment="Center" />
+                </Button>
+
+            </StackPanel>
+        </ScrollViewer>
+
+
+        <!-- EDITACE PROFILU -->
+        <Border Background="#090E17" IsVisible="{Binding IsProfileVisible}">
+            <ScrollViewer>
+                <StackPanel Spacing="20" Margin="10,10,20,20">
+
+                    <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,20">
+                        <Button Grid.Column="0" Content="Zpět" Command="{Binding ZavritProfilCommand}"
+                                Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
+                        <TextBlock Grid.Column="1" Text="Můj Profil" FontSize="20" FontWeight="Bold" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Button Grid.Column="2" Content="Uložit" Command="{Binding UlozNastaveniCommand}"
+                                Background="Transparent" Foreground="#00E5FF" FontWeight="Bold" Cursor="Hand" />
+                    </Grid>
+
+                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                        <Border Width="80" Height="80" CornerRadius="40" Background="#151C2C">
+                            <TextBlock Text="{Binding ProfilovkaCesta}" FontSize="40" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" Foreground="#00E5FF" />
+                        </Border>
+                        <Button Content="Změnit fotku" Command="{Binding ZmenitProfilovouFotkuCommand}"
+                                Background="Transparent" Foreground="#A0AABF" Cursor="Hand"
+                                HorizontalAlignment="Center" FontSize="12" />
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding ZpravaUlozeno}" Foreground="#4CAF50" FontWeight="Bold"
+                               HorizontalAlignment="Center" Margin="0,-10,0,10"
+                               IsVisible="{Binding ZpravaUlozeno, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+                    <!-- OSOBNÍ ÚDAJE -->
+                    <Border Background="#151C2C" CornerRadius="15" Padding="20">
+                        <StackPanel Spacing="15">
+                            <TextBlock Text="Jméno (Max 30 znaků)" FontSize="14" Foreground="#A0AABF" />
+                            <TextBox Text="{Binding Jmeno}" MaxLength="30" Background="Transparent" Foreground="White"
+                                     BorderBrush="#2A364F" BorderThickness="0,0,0,1" Padding="0,5,0,5" FontSize="18" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- FYZICKÉ STATISTIKY -->
+                    <TextBlock Text="FYZICKÉ STATISTIKY" FontSize="12" FontWeight="Bold" Foreground="#A0AABF"
+                               Margin="10,10,0,-10" />
+                    <Border Background="#151C2C" CornerRadius="15" Padding="20">
+                        <StackPanel Spacing="20">
+
+                            <Grid ColumnDefinitions="*, Auto">
+                                <TextBlock Grid.Column="0" Text="Pohlaví" Foreground="White" VerticalAlignment="Center"
+                                           FontSize="16" />
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding MoznostiPohlavi}"
+                                          SelectedItem="{Binding VybranePohlavi}" Background="#1E2A40"
+                                          Foreground="White" CornerRadius="20" Width="120" HorizontalAlignment="Right" />
+                            </Grid>
+                            <Border Height="1" Background="#2A364F" />
+
+                            <Grid ColumnDefinitions="*, Auto">
+                                <TextBlock Grid.Column="0" Text="Datum narození" Foreground="White"
+                                           VerticalAlignment="Center" FontSize="16" />
+                                <DatePicker Grid.Column="1" SelectedDate="{Binding DatumNarozeni}"
+                                            Background="Transparent" Foreground="White" BorderThickness="0" />
+                            </Grid>
+                            <Border Height="1" Background="#2A364F" />
+
+                            <Grid ColumnDefinitions="*, Auto">
+                                <TextBlock Grid.Column="0" Text="Věk" Foreground="White" VerticalAlignment="Center"
+                                           FontSize="16" />
+                                <TextBlock Grid.Column="1" Text="{Binding Vek}" Foreground="#A0AABF"
+                                           VerticalAlignment="Center" FontSize="16" />
+                            </Grid>
+                            <Border Height="1" Background="#2A364F" />
+
+                            <StackPanel Spacing="5">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <TextBlock Grid.Column="0" Text="Výška (cm)" Foreground="White"
+                                               VerticalAlignment="Center" FontSize="16" />
+                                    <NumericUpDown Grid.Column="1" Value="{Binding VyskaCm}" Background="Transparent"
+                                                   Foreground="White" BorderThickness="0" ShowButtonSpinner="False"
+                                                   TextAlignment="Right" />
+                                </Grid>
+                                <TextBlock Text="{Binding ChybaVyska}" Foreground="#F44336" FontSize="12"
+                                           HorizontalAlignment="Right"
+                                           IsVisible="{Binding ChybaVyska, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            </StackPanel>
+                            <Border Height="1" Background="#2A364F" />
+
+                            <!-- BMI PROGRESS BAR (plus pohyblivá šipka - trojúhelník) -->
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="BMI" Foreground="White" FontSize="16" />
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <TextBlock Grid.Column="0" Text="{Binding Bmi, StringFormat='BMI: {0:F1}'}"
+                                               Foreground="#A0AABF" FontSize="14" />
+                                    <TextBlock Grid.Column="1" Text="{Binding BmiText}" Foreground="#4CAF50"
+                                               FontSize="14" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,*,*,*" Height="8" ClipToBounds="True" Margin="0,5,0,0">
+                                    <Rectangle Grid.Column="0" Fill="#2196F3" />
+                                    <Rectangle Grid.Column="1" Fill="#4CAF50" />
+                                    <Rectangle Grid.Column="2" Fill="#FFC107" />
+                                    <Rectangle Grid.Column="3" Fill="#F44336" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,*,*,*">
+                                    <TextBlock Grid.Column="{Binding BmiSloupec}" Text="▼" Foreground="White"
+                                               HorizontalAlignment="Center" FontSize="10" />
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- VÁHA A CÍLE -->
+                    <TextBlock Text="VÁHA A CÍLE" FontSize="12" FontWeight="Bold" Foreground="#A0AABF"
+                               Margin="10,10,0,-10" />
+                    <Border Background="#151C2C" CornerRadius="15" Padding="20">
+                        <StackPanel Spacing="20">
+
+                            <Grid ColumnDefinitions="*, Auto">
+                                <TextBlock Grid.Column="0" Text="Sledovat váhu" Foreground="White"
+                                           VerticalAlignment="Center" FontSize="16" />
+                                <ToggleSwitch Grid.Column="1" IsChecked="{Binding SledovatVahuUI}" OnContent=""
+                                              OffContent="" Margin="0,-10,0,-10" />
+                            </Grid>
+
+                            <StackPanel Spacing="20" IsVisible="{Binding SledovatVahuSkutecnost}">
+                                <Border Height="1" Background="#2A364F" />
+
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <TextBlock Grid.Column="0" Text="Aktuální váha (kg)" Foreground="White"
+                                               VerticalAlignment="Center" FontSize="16" />
+                                    <TextBlock Grid.Column="1" Text="{Binding AktualniVaha}" Foreground="#A0AABF"
+                                               VerticalAlignment="Center" FontSize="16" />
+                                </Grid>
+                                <Border Height="1" Background="#2A364F" />
+
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <TextBlock Grid.Column="0" Text="Cílová váha (kg)" Foreground="White"
+                                               VerticalAlignment="Center" FontSize="16" />
+                                    <TextBlock Grid.Column="1" Text="{Binding CilovaVahaKg}" Foreground="#A0AABF"
+                                               VerticalAlignment="Center" FontSize="16" />
+                                </Grid>
+
+                                <Button Command="{Binding OtevritZaznamVahyDialogCommand}" Background="#090E17"
+                                        CornerRadius="10" Padding="15" HorizontalAlignment="Stretch" Cursor="Hand"
+                                        Margin="0,10,0,0">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <TextBlock Grid.Column="0" Text="Zapsat dnešní váhu" Foreground="#00E5FF"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1" Text="+ PŘIDAT" Foreground="#00E5FF"
+                                                   FontWeight="Bold" VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        
+        <!-- DIALOGOVÁ OKNA -->
+        <!-- Nastavení cílové váhy -->
+        <Grid Background="#AA000000" IsVisible="{Binding IsTargetWeightDialogVisible}" ZIndex="10">
+            <Border Background="#151C2C" CornerRadius="15" Padding="20" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Width="300">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Nastavit cílovou váhu" FontSize="18" FontWeight="Bold" Foreground="White"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="Zadejte svou vysněnou váhu, abychom mohli sledovat váš progres."
+                               Foreground="#A0AABF" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" />
+
+                    <NumericUpDown Value="{Binding DialogCilovaVaha}" Background="#1E2A40" Foreground="White"
+                                   BorderThickness="0" ShowButtonSpinner="False" HorizontalContentAlignment="Center"
+                                   FontSize="20" />
+
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <Button Grid.Column="0" Content="Zrušit" Command="{Binding ZrusitCilovouVahuCommand}"
+                                Background="Transparent" Foreground="#A0AABF" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" Cursor="Hand" />
+                        <Button Grid.Column="2" Content="Uložit" Command="{Binding PotvrditCilovouVahuCommand}"
+                                Background="#00E5FF" Foreground="#090E17" FontWeight="Bold" CornerRadius="8"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Zrušení sledování -->
+        <Grid Background="#AA000000" IsVisible="{Binding IsDisableTrackingDialogVisible}" ZIndex="10">
+            <Border Background="#151C2C" CornerRadius="15" Padding="20" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Width="300">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Upozornění" FontSize="18" FontWeight="Bold" Foreground="#F44336"
+                               HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="Opravdu chcete zrušit sledování váhy? Všechny historické záznamy a cíl budou trvale smazány!"
+                        Foreground="White" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" />
+
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <Button Grid.Column="0" Content="Zpět" Command="{Binding ZrusitZruseniSledovaniCommand}"
+                                Background="Transparent" Foreground="#A0AABF" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" Cursor="Hand" />
+                        <Button Grid.Column="2" Content="Smazat" Command="{Binding PotvrditZruseniSledovaniCommand}"
+                                Background="#F44336" Foreground="White" FontWeight="Bold" CornerRadius="8"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Záznam dnešní váhy -->
+        <Grid Background="#AA000000" IsVisible="{Binding IsLogWeightDialogVisible}" ZIndex="10">
+            <Border Background="#151C2C" CornerRadius="15" Padding="20" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Width="300">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Dnešní váha" FontSize="18" FontWeight="Bold" Foreground="White"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="Zadejte svou aktuální hmotnost pro dnešní den. Starší dnešní záznam bude přepsán."
+                               Foreground="#A0AABF" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" />
+
+                    <NumericUpDown Value="{Binding DialogAktualniVaha}" Background="#1E2A40" Foreground="White"
+                                   BorderThickness="0" ShowButtonSpinner="False" HorizontalContentAlignment="Center"
+                                   FontSize="20" />
+
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <Button Grid.Column="0" Content="Zrušit" Command="{Binding ZrusitZaznamVahyCommand}"
+                                Background="Transparent" Foreground="#A0AABF" HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" Cursor="Hand" />
+                        <Button Grid.Column="2" Content="Zapsat" Command="{Binding PotvrditZaznamVahyCommand}"
+                                Background="#00E5FF" Foreground="#090E17" FontWeight="Bold" CornerRadius="8"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>

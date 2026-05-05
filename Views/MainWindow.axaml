@@ -1,19 +1,76 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:FitnessApp.ViewModels"
+        xmlns:v="using:FitnessApp.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
         x:Class="FitnessApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="FitnessApp">
+        Title="FitnessApp"
+        Width="1000" Height="700"
+        WindowStartupLocation="CenterScreen"
+        Background="#090E17">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
+    <Grid ColumnDefinitions="250, *">
 
+        <!-- Menu vlevo -->
+        <Border Grid.Column="0" Background="#151C2C" CornerRadius="0,20,20,0" Padding="20">
+            
+            <Grid RowDefinitions="Auto, *, Auto">
+                
+                <!-- Hlavička menu -->
+                <TextBlock Grid.Row="0" Text="GET GAINS" FontSize="24" FontWeight="Bold" 
+                           Foreground="#00E5FF" HorizontalAlignment="Center" Margin="0,20,0,40"/>
+
+                <!-- Navigační tlačítka -->
+                <StackPanel Grid.Row="1" Spacing="10">
+                    <Button Content="Dashboard" Command="{Binding ZobrazDashboard}" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
+                    
+                    <Button Content="Historie" Command="{Binding ZobrazHistorii}" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
+                    
+                    <Button Content="Aktivní trénink" Command="{Binding ZobrazTrenink}" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
+                    
+                    <Button Content="Moje plány" Command="{Binding ZobrazPlany}" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
+                    
+                    <Button Content="Databáze cviků" Command="{Binding ZobrazCviky}" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
+                            Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
+                </StackPanel>
+
+                <!-- Nastavení dole -->
+                <Button Grid.Row="2" Content="Nastavení" Command="{Binding ZobrazNastaveni}" 
+                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" 
+                        Padding="20,15" CornerRadius="10" Background="#1E2A40" Foreground="White" Cursor="Hand" />
+            </Grid>
+        </Border>
+
+        <!-- Zobrazení stránek (pomocí Explicit DataTemplates) -->
+        <Border Grid.Column="1" Padding="30">
+            <ContentControl Content="{Binding CurrentPage}" Foreground="White">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                        <v:DashboardView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                        <v:SettingsView />
+                    </DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
+        </Border>
+
+    </Grid>
 </Window>

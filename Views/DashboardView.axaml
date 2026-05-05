@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FitnessApp.ViewModels"
+             x:Class="FitnessApp.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+    
+    <ScrollViewer>
+        <StackPanel Spacing="30" Margin="10,10,20,20">
+            
+            <!-- Hlavička -->
+            <Grid ColumnDefinitions="*, Auto">
+                
+                <StackPanel Grid.Column="0" Spacing="5" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding FullGreeting}" FontSize="32" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding CurrentDateText}" FontSize="16" Foreground="#A0AABF" />
+                </StackPanel>
+                
+                <Button Grid.Column="1" Width="55" Height="55" CornerRadius="30" Background="#151C2C" VerticalAlignment="Top" Cursor="Hand">
+                    <TextBlock Text="👤" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#00E5FF"/>
+                </Button>
+            </Grid>
+
+            <!-- Statistiky -->
+            <Grid ColumnDefinitions="*,*,*" Margin="0,10,0,0">
+                <!-- Cvičení -->
+                <Border Grid.Column="0" Background="#151C2C" CornerRadius="15" Padding="20" Margin="0,0,10,0">
+                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                        <TextBlock Text="⏱️" FontSize="24" HorizontalAlignment="Center"/>
+                        <TextBlock Text="0" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="WORKOUTS" FontSize="12" Foreground="#A0AABF" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Volume -->
+                <Border Grid.Column="1" Background="#151C2C" CornerRadius="15" Padding="20" Margin="10,0,10,0">
+                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                        <TextBlock Text="🏋️" FontSize="24" HorizontalAlignment="Center"/>
+                        <TextBlock Text="0 kg" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="VOLUME (MONTH)" FontSize="12" Foreground="#A0AABF" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Celkový čas -->
+                <Border Grid.Column="2" Background="#151C2C" CornerRadius="15" Padding="20" Margin="10,0,0,0">
+                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                        <TextBlock Text="📈" FontSize="24" HorizontalAlignment="Center"/>
+                        <TextBlock Text="0 min" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="TOTAL TIME" FontSize="12" Foreground="#A0AABF" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Quick Start -->
+            <StackPanel Spacing="15">
+                <TextBlock Text="Quick Start" FontSize="20" FontWeight="Bold" Foreground="White" />
+                <Button Background="#00E5FF" CornerRadius="15" Padding="20,25" HorizontalAlignment="Left" Width="220" Cursor="Hand">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="▶" FontSize="24" Foreground="#090E17"/>
+                        <TextBlock Text="Start an empty&#x0a;workout" FontSize="18" FontWeight="Bold" Foreground="#090E17" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <!-- Poslední cvičení -->
+            <StackPanel Spacing="15">
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Text="Recent Activity" FontSize="20" FontWeight="Bold" Foreground="White" />
+                    <TextBlock Grid.Column="1" Text="See All >" FontSize="14" Foreground="#00E5FF" VerticalAlignment="Center" Cursor="Hand" />
+                </Grid>
+                
+                <Border Background="#151C2C" CornerRadius="15" Padding="40">
+                    <TextBlock Text="No activity" FontSize="16" Foreground="#A0AABF" HorizontalAlignment="Center" />
+                </Border>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using LiteDB;
 using FitnessApp.Models;
@@ -9,86 +8,124 @@ namespace FitnessApp.Services
 {
     public class DatabaseService
     {
-        private readonly string _dbPath = "FitnessApp.db";
-        
-        // Kolekce
-        private ILiteCollection<Cvik> Cviky => GetDb().GetCollection<Cvik>("cviky");
-        private ILiteCollection<Plan> Plany => GetDb().GetCollection<Plan>("plany");
-        private ILiteCollection<ZaznamTreninku> Zaznamy => GetDb().GetCollection<ZaznamTreninku>("zaznamy");
-        private ILiteCollection<Uzivatel> Uzivatele => GetDb().GetCollection<Uzivatel>("uzivatele");
-        
-        private LiteDatabase GetDb()
-        {
-            return new LiteDatabase(_dbPath);
-        }
-        
-        // Cviky
+        private readonly string _connectionString = "Filename=FitnessApp.db;Connection=shared";
+
         public List<Cvik> GetAllCviky()
         {
-            return Cviky.FindAll().ToList();
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Cvik>("cviky");
+                return col.FindAll().ToList();
+            }
         }
 
         public void SaveCvik(Cvik cvik)
         {
-            Cviky.Upsert(cvik);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Cvik>("cviky");
+                col.Upsert(cvik);
+            }
         }
 
         public void DeleteCvik(Guid id)
         {
-            Cviky.Delete(id);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Cvik>("cviky");
+                col.Delete(id);
+            }
         }
-        
-        // PLány
+
         public List<Plan> GetAllPlany()
         {
-            return Plany.FindAll().ToList();
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Plan>("plany");
+                return col.FindAll().ToList();
+            }
         }
 
         public void SavePlan(Plan plan)
         {
-            Plany.Upsert(plan);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Plan>("plany");
+                col.Upsert(plan);
+            }
         }
 
         public void DeletePlan(Guid id)
         {
-            Plany.Delete(id);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Plan>("plany");
+                col.Delete(id);
+            }
         }
-        
-        // Záznamy
+
         public List<ZaznamTreninku> GetAllZaznamy()
         {
-            return Zaznamy.FindAll().OrderByDescending(z => z.Datum).ToList();
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<ZaznamTreninku>("zaznamy");
+                return col.FindAll().OrderByDescending(z => z.Datum).ToList();
+            }
         }
 
         public void SaveZaznam(ZaznamTreninku zaznam)
         {
-            Zaznamy.Upsert(zaznam);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<ZaznamTreninku>("zaznamy");
+                col.Upsert(zaznam);
+            }
         }
 
         public void DeleteZaznam(Guid id)
         {
-            Zaznamy.Delete(id);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<ZaznamTreninku>("zaznamy");
+                col.Delete(id);
+            }
         }
-        
-        // Uživatelé
+
         public Uzivatel GetUzivatel()
         {
-            return Uzivatele.FindAll().FirstOrDefault() ?? new Uzivatel();
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Uzivatel>("uzivatele");
+                var uzivatel = col.FindAll().FirstOrDefault();
+                
+                if (uzivatel == null)
+                {
+                    uzivatel = new Uzivatel();
+                    col.Insert(uzivatel);
+                }
+                
+                return uzivatel;
+            }
         }
 
         public void SaveUzivatel(Uzivatel uzivatel)
         {
-            Uzivatele.Upsert(uzivatel);
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                var col = db.GetCollection<Uzivatel>("uzivatele");
+                col.Upsert(uzivatel);
+            }
         }
 
-        // Smazání všeho
         public void VymazatCelouDatabazi()
         {
-            var db = GetDb();
-            db.DropCollection("cviky");
-            db.DropCollection("plany");
-            db.DropCollection("zaznamy");
-            db.DropCollection("uzivatele");
+            using (var db = new LiteDatabase(_connectionString))
+            {
+                db.DropCollection("cviky");
+                db.DropCollection("plany");
+                db.DropCollection("zaznamy");
+                db.DropCollection("uzivatele");
+            }
         }
     }
 }
