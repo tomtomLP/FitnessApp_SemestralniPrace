@@ -24,46 +24,55 @@
             
             <Grid RowDefinitions="Auto, *, Auto">
                 
-                <!-- Hlavička menu -->
                 <TextBlock Grid.Row="0" Text="GET GAINS" FontSize="24" FontWeight="Bold" 
                            Foreground="#00E5FF" HorizontalAlignment="Center" Margin="0,20,0,40"/>
 
-                <!-- Navigační tlačítka -->
                 <StackPanel Grid.Row="1" Spacing="10">
-                    <Button Content="Dashboard" Command="{Binding ZobrazDashboard}" 
+                    <Button Content="Dashboard" Command="{Binding ZobrazDashboardCommand}" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
                             Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
                     
-                    <Button Content="Historie" Command="{Binding ZobrazHistorii}" 
+                    <Button Content="Historie" Command="{Binding ZobrazHistoriiCommand}" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
                             Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
                     
-                    <Button Content="Aktivní trénink" Command="{Binding ZobrazTrenink}" 
+                    <Button Content="Aktivní trénink" Command="{Binding ZobrazTreninkCommand}" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
                             Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
                     
-                    <Button Content="Moje plány" Command="{Binding ZobrazPlany}" 
+                    <Button Content="Moje plány" Command="{Binding ZobrazPlanyCommand}" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
                             Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
                     
-                    <Button Content="Databáze cviků" Command="{Binding ZobrazCviky}" 
+                    <Button Content="Databáze cviků" Command="{Binding ZobrazCvikyCommand}" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" 
                             Padding="20,15" CornerRadius="10" Background="Transparent" Foreground="#A0AABF" Cursor="Hand" />
                 </StackPanel>
 
-                <!-- Nastavení dole -->
-                <Button Grid.Row="2" Content="Nastavení" Command="{Binding ZobrazNastaveni}" 
+                <Button Grid.Row="2" Content="Nastavení" Command="{Binding ZobrazNastaveniCommand}" 
                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" 
                         Padding="20,15" CornerRadius="10" Background="#1E2A40" Foreground="White" Cursor="Hand" />
             </Grid>
         </Border>
 
-        <!-- Zobrazení stránek (pomocí Explicit DataTemplates) -->
+        <!-- Zobrazení stránek -->
         <Border Grid.Column="1" Padding="30">
             <ContentControl Content="{Binding CurrentPage}" Foreground="White">
                 <ContentControl.DataTemplates>
                     <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
                         <v:DashboardView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+                        <v:HistoryView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:WorkoutViewModel}">
+                        <v:WorkoutView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:PlansViewModel}">
+                        <v:PlansView />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:ExercisesViewModel}">
+                        <v:ExercisesView />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
                         <v:SettingsView />

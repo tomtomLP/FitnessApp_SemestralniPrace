@@ -1,0 +1,177 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FitnessApp.ViewModels"
+             xmlns:m="using:FitnessApp.Models"
+             x:Class="FitnessApp.Views.PlansView"
+             x:DataType="vm:PlansViewModel">
+
+    <Grid>
+        <!-- Hlavní obsah -->
+        <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="20">
+            
+            <!-- Hlavička -->
+            <TextBlock Grid.Row="0" Text="Databáze" FontSize="28" FontWeight="Bold" Foreground="White"/>
+
+            <!-- Záložky plány/cviky -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" Background="#151C2C" Margin="0,20,0,20">
+                 <!-- Plány jsou aktivní -->
+                 <Border Grid.Column="0" Background="#1E2A40" CornerRadius="10">
+                     <TextBlock Text="Plány" Foreground="#00E5FF" HorizontalAlignment="Center" Padding="12" FontWeight="Bold"/>
+                 </Border>
+                 <!-- Cviky jsou neaktivní -->
+                 <TextBlock Grid.Column="1" Text="Cviky" Foreground="#A0AABF" HorizontalAlignment="Center" Padding="12" FontWeight="Bold"/>
+            </Grid>
+
+            <!-- Karty plánů -->
+            <ScrollViewer Grid.Row="2">
+                <ItemsControl ItemsSource="{Binding VsechnyPlany}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="m:Plan">
+                            <Border Background="#151C2C" CornerRadius="15" Padding="20" Margin="0,0,0,15">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    
+                                    <!-- Informace o plánu vlevo -->
+                                    <StackPanel Grid.Column="0" Spacing="8">
+                                        <TextBlock Text="{Binding Nazev}" Foreground="White" FontSize="20" FontWeight="Bold"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <Border Background="#1E2A40" CornerRadius="5" Padding="8,4">
+                                                <TextBlock Text="{Binding Uroven}" Foreground="#A0AABF" FontSize="12" FontWeight="Bold"/>
+                                            </Border>
+                                            <Border Background="#2A364F" CornerRadius="5" Padding="8,4">
+                                                <TextBlock Text="{Binding CvikyIds.Count, StringFormat='{}{0} cviků'}" Foreground="#00E5FF" FontSize="12" FontWeight="Bold"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    
+                                    <!-- Tlačítka pro editaci a smazání plánu -->
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <!-- Tlačítko Editovat -->
+                                        <Button Command="{ReflectionBinding DataContext.OtevritEditovatDialogCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" Background="Transparent" Cursor="Hand" Padding="10">
+                                            <TextBlock Text="✏️" Foreground="#00E5FF" FontSize="22"/>
+                                        </Button>
+                                        
+                                        <!-- Tlačítko Smazat -->
+                                        <Button Command="{ReflectionBinding DataContext.OtevritSmazatDialogCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" Background="Transparent" Cursor="Hand" Padding="10">
+                                            <TextBlock Text="🗑️" Foreground="#F44336" FontSize="22"/>
+                                        </Button>
+                                    </StackPanel>
+                                    
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Tlačítko Nový plán -->
+            <Button Grid.Row="3" Command="{Binding OtevritNovyPlanDialogCommand}" Background="#00E5FF" CornerRadius="25" Padding="25,15" HorizontalAlignment="Center" Margin="0,10,0,0" Cursor="Hand">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="+" Foreground="#090E17" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="Vytvořit plán" Foreground="#090E17" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            
+        </Grid>
+        
+        <!-- Dialogy -->
+        <!-- Přidat nový plán -->
+        <Grid Background="#AA000000" IsVisible="{Binding IsAddPlanDialogVisible}" ZIndex="10">
+            <Border Background="#151C2C" CornerRadius="15" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center" Width="360" MaxHeight="650">
+                <Grid RowDefinitions="Auto, Auto, Auto, *, Auto">
+                    
+                    <!-- Základní nastavení (Název, Úroveň) -->
+                    <StackPanel Grid.Row="0" Spacing="10" Margin="0,0,0,10">
+                        <TextBlock Text="Nový tréninkový plán" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        
+                        <TextBlock Text="{Binding ChybaNovyPlan}" Foreground="#F44336" FontSize="12" HorizontalAlignment="Center" IsVisible="{Binding ChybaNovyPlan, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+                        <TextBox Text="{Binding NovyPlanNazev}" MaxLength="30" Background="#1E2A40" Foreground="White" BorderThickness="0" CornerRadius="8" Padding="10" Watermark="Název plánu (např. Full Body)"/>
+
+                        <ComboBox ItemsSource="{Binding UrovneList}" SelectedItem="{Binding NovyPlanUroven}" Background="#1E2A40" Foreground="White" CornerRadius="8" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <!-- Vyhledávání cviků v dialogu -->
+                    <Border Grid.Row="1" Background="#090E17" CornerRadius="8" Margin="0,5,0,5" Padding="10,2">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <TextBlock Grid.Column="0" Text="🔍" Foreground="#A0AABF" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox Grid.Column="1" Text="{Binding HledanyText}" Background="Transparent" BorderThickness="0" Foreground="White" Watermark="Hledat cvik..." FontSize="14"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Kategorie cviků -->
+                    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" Margin="0,5,0,10">
+                        <ItemsControl ItemsSource="{Binding KategorieList}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Command="{ReflectionBinding DataContext.ZmenKategoriiCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Background="#090E17" CornerRadius="15" Padding="12,6" Cursor="Hand">
+                                        <TextBlock Text="{Binding}" Foreground="#A0AABF" FontSize="12" FontWeight="Bold"/>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Seznam cviků s CheckBoxy -->
+                    <ScrollViewer Grid.Row="3" Background="#090E17" Padding="10" CornerRadius="8">
+                        <ItemsControl ItemsSource="{Binding ZobrazeneCvikyKVyberu}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:VyberCvikViewModel">
+                                    <Button Command="{ReflectionBinding DataContext.PrepnoutVyberCvikuCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent" HorizontalAlignment="Stretch" Cursor="Hand" Padding="5,10">
+                                        <Grid ColumnDefinitions="Auto, *, Auto">
+                                            
+                                            <!-- Kolečko s pořadím místo Checkboxu -->
+                                            <Panel Grid.Column="0" Width="30" Height="30" Margin="0,0,15,0">
+                                                <Border CornerRadius="15" BorderThickness="2" BorderBrush="#2A364F" IsVisible="{Binding !IsSelected}"/>
+                                                
+                                                <Border CornerRadius="15" Background="#00E5FF" IsVisible="{Binding IsSelected}">
+                                                    <TextBlock Text="{Binding Poradi}" Foreground="#090E17" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                                                </Border>
+                                            </Panel>
+                                            
+                                            <TextBlock Grid.Column="1" Text="{Binding CvikDetail.Nazev}" Foreground="White" VerticalAlignment="Center" FontSize="16" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Column="2" Text="★" Foreground="#FFC107" IsVisible="{Binding CvikDetail.JeOblibeny}" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="18"/>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    
+                    <!-- Tlačítka -->
+                    <Grid Grid.Row="4" ColumnDefinitions="*, 10, *" Margin="0,15,0,0">
+                        <Button Grid.Column="0" Content="Zrušit" Command="{Binding ZrusitNovyPlanCommand}" Background="Transparent" Foreground="#A0AABF" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand"/>
+                        <Button Grid.Column="2" Content="Uložit plán" Command="{Binding UlozitNovyPlanCommand}" Background="#00E5FF" Foreground="#090E17" FontWeight="Bold" CornerRadius="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand"/>
+                    </Grid>
+                    
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Potvrzení Smazání plánu -->
+        <Grid Background="#AA000000" IsVisible="{Binding IsDeleteDialogVisible}" ZIndex="10">
+            <Border Background="#151C2C" CornerRadius="15" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Smazat plán?" FontSize="18" FontWeight="Bold" Foreground="#F44336" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Opravdu chcete tento plán trvale smazat? Tuto akci nelze vrátit." Foreground="White" TextWrapping="Wrap" FontSize="14" TextAlignment="Center"/>
+                    
+                    <Grid ColumnDefinitions="*, 10, *">
+                        <Button Grid.Column="0" Content="Zrušit" Command="{Binding ZrusitSmazaniCommand}" Background="Transparent" Foreground="#A0AABF" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand"/>
+                        <Button Grid.Column="2" Content="Smazat" Command="{Binding PotvrditSmazaniCommand}" Background="#F44336" Foreground="White" FontWeight="Bold" CornerRadius="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Cursor="Hand"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>

@@ -1,42 +1,92 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FitnessApp.Models;
 
 namespace FitnessApp.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private ViewModelBase _currentPage = new DashboardViewModel(); // Výchozí stránka po zapnutí
+        private ViewModelBase _currentPage;
+        
+        private readonly DashboardViewModel _dashboardViewModel;
+        private readonly HistoryViewModel _historyViewModel;
+        private readonly WorkoutViewModel _workoutViewModel;
+        private readonly PlansViewModel _plansViewModel;
+        private readonly ExercisesViewModel _exercisesViewModel;
+        private readonly SettingsViewModel _settingsViewModel;
 
-        // Metody pro tlačítka vlevo
-        public void ZobrazDashboard()
+        public MainWindowViewModel()
         {
-            CurrentPage = new DashboardViewModel();
+            _dashboardViewModel = new DashboardViewModel();
+            _historyViewModel = new HistoryViewModel();
+            _workoutViewModel = new WorkoutViewModel();
+            _plansViewModel = new PlansViewModel();
+            _exercisesViewModel = new ExercisesViewModel();
+            _settingsViewModel = new SettingsViewModel();
+            
+            CurrentPage = _dashboardViewModel; // Defaultní stránka
+            
+            // Propojení tlačítek z dashboardu
+            
+            _dashboardViewModel.ProfilZadan = ZobrazNastaveni;
+            _dashboardViewModel.HistorieZadana = ZobrazHistorii;
+            
+            _dashboardViewModel.VolnyTreninkZadan = () => 
+            {
+                ZobrazTrenink();
+                _workoutViewModel.SpustitVolnyTreninkCommand.Execute(null); 
+            };
+            
+            _dashboardViewModel.PlanZadan = (plan) => 
+            {
+                ZobrazTrenink();
+                _workoutViewModel.SpustitPlanCommand.Execute(plan);
+            };
         }
-        
-        public void ZobrazHistorii()
+
+        // Commandy pro tlačítka vlevo
+
+        [RelayCommand]
+        private void ZobrazDashboard()
         {
-            CurrentPage = new HistoryViewModel();
+            _dashboardViewModel.NactiData();
+            CurrentPage = _dashboardViewModel;
         }
-        
-        public void ZobrazTrenink()
+
+        [RelayCommand]
+        private void ZobrazHistorii()
         {
-            CurrentPage = new WorkoutViewModel();
+            _historyViewModel.NactiHistorii();
+            CurrentPage = _historyViewModel;
         }
-        
-        public void ZobrazPlany()
+
+        [RelayCommand]
+        private void ZobrazTrenink()
         {
-            CurrentPage = new PlansViewModel();
+            _workoutViewModel.NactiPlany();
+            CurrentPage = _workoutViewModel;
         }
-        
-        public void ZobrazCviky()
+
+        [RelayCommand]
+        private void ZobrazPlany()
         {
-            CurrentPage = new ExercisesViewModel();
+            _plansViewModel.NactiPlany();
+            CurrentPage = _plansViewModel;
         }
-        
-        public void ZobrazNastaveni()
+
+        [RelayCommand]
+        private void ZobrazCviky()
         {
-            CurrentPage = new SettingsViewModel();
+            CurrentPage = _exercisesViewModel;
+        }
+
+        [RelayCommand]
+        private void ZobrazNastaveni()
+        {
+            _settingsViewModel.NactiData();
+            CurrentPage = _settingsViewModel;
         }
     }
 }

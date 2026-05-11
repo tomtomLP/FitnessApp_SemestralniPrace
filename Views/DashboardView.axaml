@@ -1,76 +1,151 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:FitnessApp.ViewModels"
+             xmlns:m="using:FitnessApp.Models"
              x:Class="FitnessApp.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
     
     <ScrollViewer>
-        <StackPanel Spacing="30" Margin="10,10,20,20">
+        <StackPanel Spacing="30" Margin="10,10,20,40">
             
-            <!-- Hlavička -->
+            <!-- Hlavička s pozdravem a datem -->
             <Grid ColumnDefinitions="*, Auto">
-                
                 <StackPanel Grid.Column="0" Spacing="5" VerticalAlignment="Center">
                     <TextBlock Text="{Binding FullGreeting}" FontSize="32" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding CurrentDateText}" FontSize="16" Foreground="#A0AABF" />
                 </StackPanel>
                 
-                <Button Grid.Column="1" Width="55" Height="55" CornerRadius="30" Background="#151C2C" VerticalAlignment="Top" Cursor="Hand">
+                <!-- Odkaz na profil -->
+                <Button Grid.Column="1" Command="{Binding JdiNaProfilCommand}" Width="55" Height="55" CornerRadius="30" Background="#151C2C" VerticalAlignment="Top" Cursor="Hand">
                     <TextBlock Text="👤" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#00E5FF"/>
                 </Button>
             </Grid>
 
-            <!-- Statistiky -->
+            <!-- Statistiky za aktuální měsíc -->
             <Grid ColumnDefinitions="*,*,*" Margin="0,10,0,0">
-                <!-- Cvičení -->
-                <Border Grid.Column="0" Background="#151C2C" CornerRadius="15" Padding="20" Margin="0,0,10,0">
-                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                <Border Grid.Column="0" Background="#151C2C" CornerRadius="15" Padding="15" Margin="0,0,5,0">
+                    <StackPanel HorizontalAlignment="Center" Spacing="8">
                         <TextBlock Text="⏱️" FontSize="24" HorizontalAlignment="Center"/>
-                        <TextBlock Text="0" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                        <TextBlock Text="WORKOUTS" FontSize="12" Foreground="#A0AABF" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding PocetTreninku}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="TRÉNINKY" FontSize="10" FontWeight="Bold" Foreground="#A0AABF" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Volume -->
-                <Border Grid.Column="1" Background="#151C2C" CornerRadius="15" Padding="20" Margin="10,0,10,0">
-                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                <Border Grid.Column="1" Background="#151C2C" CornerRadius="15" Padding="15" Margin="5,0,5,0">
+                    <StackPanel HorizontalAlignment="Center" Spacing="8">
                         <TextBlock Text="🏋️" FontSize="24" HorizontalAlignment="Center"/>
-                        <TextBlock Text="0 kg" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                        <TextBlock Text="VOLUME (MONTH)" FontSize="12" Foreground="#A0AABF" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding CelkoveVolume, StringFormat='{}{0} kg'}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="VOLUME / MĚSÍC" FontSize="10" FontWeight="Bold" Foreground="#A0AABF" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Celkový čas -->
-                <Border Grid.Column="2" Background="#151C2C" CornerRadius="15" Padding="20" Margin="10,0,0,0">
-                    <StackPanel HorizontalAlignment="Center" Spacing="10">
+                <Border Grid.Column="2" Background="#151C2C" CornerRadius="15" Padding="15" Margin="5,0,0,0">
+                    <StackPanel HorizontalAlignment="Center" Spacing="8">
                         <TextBlock Text="📈" FontSize="24" HorizontalAlignment="Center"/>
-                        <TextBlock Text="0 min" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                        <TextBlock Text="TOTAL TIME" FontSize="12" Foreground="#A0AABF" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding CelkovyCasMinuty, StringFormat='{}{0} min'}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="ČAS / MĚSÍC" FontSize="10" FontWeight="Bold" Foreground="#A0AABF" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Grid>
 
-            <!-- Quick Start -->
+            <!-- Sledování Váhy (pokud je zapnuté) -->
+            <Border Background="#151C2C" CornerRadius="15" Padding="20" IsVisible="{Binding ZobrazitSledovaniVahy}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Cíl hmotnosti" Foreground="White" FontSize="18" FontWeight="Bold" Margin="0,0,0,5"/>
+                    
+                    <Grid ColumnDefinitions="*, Auto, *">
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                            <TextBlock Text="Začátek" Foreground="#A0AABF" FontSize="12"/>
+                            <TextBlock Text="{Binding SledovaniVahyStart, StringFormat='{}{0:0.#} kg'}" Foreground="White" FontWeight="Bold" FontSize="14"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="Aktuální" Foreground="#00E5FF" FontSize="12" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding SledovaniVahyAktualni, StringFormat='{}{0:0.#} kg'}" Foreground="#00E5FF" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                            <TextBlock Text="Cíl" Foreground="#A0AABF" FontSize="12" HorizontalAlignment="Right"/>
+                            <TextBlock Text="{Binding SledovaniVahyCil, StringFormat='{}{0:0.#} kg'}" Foreground="White" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <!-- Progress bar s tečkou -->
+                    <Slider Minimum="0" Maximum="100" Value="{Binding ProgressPercentage}" 
+                            IsHitTestVisible="False" Background="#2A364F" Foreground="#00E5FF" Margin="0,-5,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Quick start tréninku a Plány -->
             <StackPanel Spacing="15">
-                <TextBlock Text="Quick Start" FontSize="20" FontWeight="Bold" Foreground="White" />
-                <Button Background="#00E5FF" CornerRadius="15" Padding="20,25" HorizontalAlignment="Left" Width="220" Cursor="Hand">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="▶" FontSize="24" Foreground="#090E17"/>
-                        <TextBlock Text="Start an empty&#x0a;workout" FontSize="18" FontWeight="Bold" Foreground="#090E17" TextWrapping="Wrap"/>
+                <TextBlock Text="Rychlý start" FontSize="20" FontWeight="Bold" Foreground="White" />
+                
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        
+                        <!-- Volný Trénink -->
+                        <Button Command="{Binding SpustitVolnyTreninkCommand}" Background="#00E5FF" CornerRadius="15" Padding="20,25" Width="200" Cursor="Hand">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="▶" FontSize="24" Foreground="#090E17"/>
+                                <TextBlock Text="Volný&#x0a;trénink" FontSize="18" FontWeight="Bold" Foreground="#090E17" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Výpis vytvořených plánů -->
+                        <ItemsControl ItemsSource="{Binding DostupnePlany}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="15"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="m:Plan">
+                                    <Button Command="{ReflectionBinding DataContext.SpustitPlanCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" Background="#1E2A40" CornerRadius="15" Padding="20,25" Width="200" Cursor="Hand">
+                                        <StackPanel Spacing="10">
+                                            <TextBlock Text="📋" FontSize="24" Foreground="White"/>
+                                            <TextBlock Text="{Binding Nazev}" FontSize="18" FontWeight="Bold" Foreground="White" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
-                </Button>
+                </ScrollViewer>
             </StackPanel>
 
             <!-- Poslední cvičení -->
             <StackPanel Spacing="15">
                 <Grid ColumnDefinitions="*, Auto">
-                    <TextBlock Grid.Column="0" Text="Recent Activity" FontSize="20" FontWeight="Bold" Foreground="White" />
-                    <TextBlock Grid.Column="1" Text="See All >" FontSize="14" Foreground="#00E5FF" VerticalAlignment="Center" Cursor="Hand" />
+                    <TextBlock Grid.Column="0" Text="Nedávná aktivita" FontSize="20" FontWeight="Bold" Foreground="White" />
+                    <!-- Odkaz do celé Historie -->
+                    <Button Grid.Column="1" Command="{Binding JdiNaHistoriiCommand}" Background="Transparent" Padding="0" Cursor="Hand">
+                        <TextBlock Text="Celá historie >" FontSize="14" Foreground="#00E5FF" VerticalAlignment="Center" />
+                    </Button>
                 </Grid>
                 
-                <Border Background="#151C2C" CornerRadius="15" Padding="40">
-                    <TextBlock Text="No activity" FontSize="16" Foreground="#A0AABF" HorizontalAlignment="Center" />
+                <Border Background="#151C2C" CornerRadius="15" Padding="40" IsVisible="{Binding !MaNedavnouAktivitu}">
+                    <TextBlock Text="Zatím žádná odjetá cvičení." FontSize="16" Foreground="#A0AABF" HorizontalAlignment="Center" />
                 </Border>
+
+                <ItemsControl ItemsSource="{Binding NedavnaAktivita}" IsVisible="{Binding MaNedavnouAktivitu}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="m:ZaznamTreninku">
+                            <Border Background="#151C2C" CornerRadius="15" Padding="20" Margin="0,0,0,15">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Nazev}" Foreground="White" FontSize="18" FontWeight="Bold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Datum, StringFormat='{}{0:dd. MM. yyyy}'}" Foreground="#A0AABF" FontSize="14"/>
+                                    </StackPanel>
+                                    
+                                    <Border Grid.Column="1" Background="#1E2A40" CornerRadius="8" Padding="10,5" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding OdcviceneCviky.Count, StringFormat='{}{0} cviků'}" Foreground="#00E5FF" FontSize="14" FontWeight="Bold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
 
         </StackPanel>

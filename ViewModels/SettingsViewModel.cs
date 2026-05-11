@@ -32,12 +32,12 @@ namespace FitnessApp.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Vek))]
         private DateTimeOffset _datumNarozeni;
-        
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Bmi))]
         [NotifyPropertyChangedFor(nameof(BmiText))]
         [NotifyPropertyChangedFor(nameof(BmiSloupec))]
-        private double? _vyskaCm;   // double?, aby nemohl být Null (neházel chybu)
+        private double? _vyskaCm;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Bmi))]
@@ -53,14 +53,13 @@ namespace FitnessApp.ViewModels
 
         [ObservableProperty] 
         private string _profilovkaCesta = "👤";
-        
-        // Pokud je zaplé sledování
+
         [ObservableProperty] 
         private bool _sledovatVahuSkutecnost;
 
         [ObservableProperty] 
         private double? _cilovaVahaKg;
-        
+
         private bool _sledovatVahuUI;
         public bool SledovatVahuUI
         {
@@ -73,28 +72,26 @@ namespace FitnessApp.ViewModels
 
                     if (value)
                     {
-                        // Zadání cílové váhy
                         DialogCilovaVaha = CilovaVahaKg > 0 ? CilovaVahaKg : null;
                         IsTargetWeightDialogVisible = true;
                     }
                     else
                     {
-                        // Potvrzení smazání dat
                         IsDisableTrackingDialogVisible = true;
                     }
                 }
             }
         }
 
-        // --- STAVY DIALOGOVÝCH OKEN ---
+        // Dialog - stavy
         [ObservableProperty] private bool _isTargetWeightDialogVisible;
         [ObservableProperty] private bool _isDisableTrackingDialogVisible;
         [ObservableProperty] private bool _isLogWeightDialogVisible;
+        
+        [ObservableProperty] private bool _isResetDialogVisible;
 
-        // --- DOČASNÉ VSTUPY ---
         [ObservableProperty] private double? _dialogCilovaVaha;
         [ObservableProperty] private double? _dialogAktualniVaha;
-
 
         [ObservableProperty]
         private string _vybraneTema = "Cyber Future";
@@ -119,7 +116,6 @@ namespace FitnessApp.ViewModels
             }
         }
 
-        // Výpočet BMI (i s NULL => počítá se s "0")
         public double Bmi
         {
             get
@@ -163,7 +159,7 @@ namespace FitnessApp.ViewModels
             NactiData();
         }
 
-        private void NactiData()
+        public void NactiData()
         {
             _uzivatel = _db.GetUzivatel();
 
@@ -184,6 +180,9 @@ namespace FitnessApp.ViewModels
             
             SledovatVahuSkutecnost = _uzivatel.SledovatVahu;
             
+            RestTimerEnabled = _uzivatel.RestTimerZapnuty;
+            RestTimerSeconds = _uzivatel.RestTimerSekundy > 0 ? _uzivatel.RestTimerSekundy : 180;
+
             _sledovatVahuUI = _uzivatel.SledovatVahu;
             OnPropertyChanged(nameof(SledovatVahuUI));
         }
@@ -227,12 +226,14 @@ namespace FitnessApp.ViewModels
             _uzivatel.CilovaVahaKg = CilovaVahaKg ?? 0;
             _uzivatel.VahaKg = AktualniVaha ?? 0;
             _uzivatel.SledovatVahu = SledovatVahuSkutecnost;
+            
+            _uzivatel.RestTimerZapnuty = RestTimerEnabled;
+            _uzivatel.RestTimerSekundy = RestTimerSeconds;
 
             _db.SaveUzivatel(_uzivatel);
             ZpravaUlozeno = "Úspěšně uloženo!";
         }
-        
-        // Dialog cílové váhy
+
         [RelayCommand]
         private void PotvrditCilovouVahu()
         {
@@ -246,7 +247,6 @@ namespace FitnessApp.ViewModels
             }
         }
 
-        // Dialog zrušení sledování váhy
         [RelayCommand]
         private void ZrusitCilovouVahu()
         {
@@ -254,7 +254,7 @@ namespace FitnessApp.ViewModels
             OnPropertyChanged(nameof(SledovatVahuUI));
             IsTargetWeightDialogVisible = false;
         }
-        
+
         [RelayCommand]
         private void PotvrditZruseniSledovani()
         {
@@ -269,13 +269,11 @@ namespace FitnessApp.ViewModels
             
             UlozNastaveni();
             
-            // Přepočítáme BMI
             OnPropertyChanged(nameof(Bmi));
             OnPropertyChanged(nameof(BmiText));
             OnPropertyChanged(nameof(BmiSloupec));
         }
 
-        // Tlačítko zrušit
         [RelayCommand]
         private void ZrusitZruseniSledovani()
         {
@@ -283,8 +281,7 @@ namespace FitnessApp.ViewModels
             OnPropertyChanged(nameof(SledovatVahuUI));
             IsDisableTrackingDialogVisible = false;
         }
-        
-        // Dialog zápisu dnešní váhy
+
         [RelayCommand]
         private void OtevritZaznamVahyDialog()
         {
@@ -310,11 +307,11 @@ namespace FitnessApp.ViewModels
 
             if (existujiciZaznam != null) 
             {
-                existujiciZaznam.Vaha = novaVaha; // Přepsání dnešní váhy
+                existujiciZaznam.Vaha = novaVaha; 
             }
             else 
             {
-                _uzivatel.HistorieVahy.Add(new ZaznamVahy { Datum = dnes, Vaha = novaVaha }); // Nový záznam
+                _uzivatel.HistorieVahy.Add(new ZaznamVahy { Datum = dnes, Vaha = novaVaha });
             }
 
             _uzivatel.VahaKg = novaVaha;
@@ -322,7 +319,6 @@ namespace FitnessApp.ViewModels
             
             IsLogWeightDialogVisible = false;
 
-            // Změna BMI.
             OnPropertyChanged(nameof(Bmi));
             OnPropertyChanged(nameof(BmiText));
             OnPropertyChanged(nameof(BmiSloupec));
@@ -336,17 +332,52 @@ namespace FitnessApp.ViewModels
             IsLogWeightDialogVisible = false;
         }
 
-
         [RelayCommand]
         private void ZmenitProfilovouFotku()
         {
-            ZpravaUlozeno = "Výběr fotky z galerie přidáme později.";
+            ZpravaUlozeno = "Výběr fotky není podporován.";
         }
-
+        
+        // Reset aplikace
         [RelayCommand]
         private void ResetovatAplikaci()
         {
-            // Zde později zavoláme logiku resetu aplikace
+            IsResetDialogVisible = true;
+        }
+
+        [RelayCommand]
+        private void ZrusitReset()
+        {
+            IsResetDialogVisible = false;
+        }
+
+        [RelayCommand]
+        private void PotvrditReset()
+        {
+            // Smazání všech plánů
+            foreach (var plan in _db.GetAllPlany())
+            {
+                _db.DeletePlan(plan.Id);
+            }
+
+            // Smazání celé historie tréninků
+            foreach (var zaznam in _db.GetAllZaznamy())
+            {
+                _db.DeleteZaznam(zaznam.Id);
+            }
+
+            // Přepsání uživatelského profilu
+            _uzivatel = new Uzivatel();
+            _db.SaveUzivatel(_uzivatel);
+
+            // Zavření dialogu
+            NactiData();
+            IsResetDialogVisible = false;
+
+            // Aktualizace BMI ukazatelů
+            OnPropertyChanged(nameof(Bmi));
+            OnPropertyChanged(nameof(BmiText));
+            OnPropertyChanged(nameof(BmiSloupec));
         }
 
         [RelayCommand]
@@ -355,6 +386,7 @@ namespace FitnessApp.ViewModels
             if (RestTimerSeconds >= 15)
             {
                 RestTimerSeconds -= 15;
+                UlozNastaveni();
             }
         }
 
@@ -362,6 +394,12 @@ namespace FitnessApp.ViewModels
         private void PridejCas()
         {
             RestTimerSeconds += 15;
+            UlozNastaveni();
+        }
+
+        partial void OnRestTimerEnabledChanged(bool value)
+        {
+            UlozNastaveni();
         }
     }
 }

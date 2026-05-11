@@ -26,6 +26,9 @@ namespace FitnessApp.Models
         
         public bool SledovatVahu { get; set; } = false;
         public double CilovaVahaKg { get; set; } = 0;
+        
+        public bool RestTimerZapnuty { get; set; } = true;
+        public int RestTimerSekundy { get; set; } = 180;
 
         [BsonIgnore]
         public double BMI 
